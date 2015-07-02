@@ -1,0 +1,78 @@
+% syms  ddy xg ddx
+% global total_mass g
+% yg=.055
+% tx=-2.774
+% tx=total_mass*g*yg-total_mass*ddy*(.2215)
+% ty=-total_mass*g*xg+total_mass*ddx*(.2215)
+% 
+% ddy=(total_mass*g*yg -tx)/(total_mass*.2215)
+% 
+clear all
+close all
+% 
+% total_mass*4.8456/eps
+% 
+%  sum(p_k(1,:,i)'.*lambda_traj(:,i))
+%  sum( p_k(2,:,i)'.*lambda_traj(:,i))
+%  
+% ( total_mass*g*yg-total_mass*ddy*(.2215))/(total_mass*g)
+
+%% Walking along the trajectory
+figure
+for s = 1:nb_steps
+    
+    % generate the trajectory for one step
+    if start == 1
+        % get the transformation matrix for the legs
+        T_leg_R = chain_leg_R(:,:,end);
+        T_leg_L = chain_leg_L(:,:,end);
+        
+        [P_F, P_SR_traj, P_SL_traj, xi_Fi_traj, lambda_traj] = ...
+            generate_stepNoBck(step_length/2,0,step_time,nb_points,...
+            swing_foot);
+%         [P_F, P_SR_traj, P_SL_traj, eps_Fi_traj, lambda_traj] = ...
+%             generate_static_step(step_length,0,step_time,nb_points,...
+%             swing_foot);
+        start = 0;
+        %com_desired = com_traj;
+        desired_pos(:,:,(s-1)*nb_points+1:s*nb_points) = P_F;
+    else
+        % just for testing get the last value of previous trajectory to be
+        % the new starting point for the next step
+        T_leg_R = makehgtform('translate',P_F(:,1,end));
+        T_leg_L = makehgtform('translate',P_F(:,2,end));
+        %         T_leg_R = chain_leg_R(:,:,end);
+        %         T_leg_L = chain_leg_L(:,:,end);
+        
+        [P_F, P_SR_traj, P_SL_traj, xi_Fi_traj, lambda_traj] = ...
+            generate_stepNoBck(step_length,0,step_time,nb_points,...
+            swing_foot);
+%         [P_F, P_SR_traj, P_SL_traj, eps_Fi_traj, lambda_traj] = ...
+%             generate_static_step(step_length,0,step_time,nb_points,...
+%             swing_foot);
+       % com_desired = [com_desired, com_traj];
+        desired_pos(:,:,(s-1)*nb_points+1:s*nb_points) = P_F;
+    end
+    
+    % reset the parameters between two steps
+    dx_G0 = 0;
+    dy_G0 = 0;
+    dz_G0 = 0;
+    Lk0 = zeros(3,1);
+    Lk1 = zeros(3,1);
+   n_k=[zeros(1,size(lambda_traj,1));zeros(1,size(lambda_traj,1));ones(1,size(lambda_traj,1))];
+    p_k=[P_SR_traj,P_SL_traj];
+    [ x_c, y_c,z_c,T_Cx,T_Cy]=moment_vars(ddz_G_traj, lambda_traj,p_k, alpha, n_k);
+    
+   plot (-T_Cy,T_Cx)
+   %plot (squeeze(P_F(1,1,:)),squeeze(P_F(2,1,:)),'*b')
+    hold on
+   % plot (squeeze(P_F(1,2,:)),squeeze(P_F(2,2,:)),'*r')
+   % hold on
+    s
+     if swing_foot == 1
+        swing_foot = 2;
+    else
+        swing_foot = 1;
+    end
+end

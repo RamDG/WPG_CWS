@@ -1,0 +1,90 @@
+function [ chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head ] = ...
+    move_robot( theta_leg, theta_arm, theta_head,swing,nextSwing_foot,s )
+%MOVE_ROBOT move the robot with the desired joint values
+%   theta_leg : joint values for the legs ([theta_leg_R, theta_leg_L])
+%   theta_arm : joint values for the arms ([theta_arm_R, theta_arm_L])
+
+%   J_leg : Jacobian matrices of the legs
+%   J_arm : Jacobian matrices of the arms
+%   P_Fi : positions of the feet
+%   P_Hi : positions of the hands
+
+%% Global variables
+global P_COG;
+global P_Fi;
+global P_Hi;
+global Mt;
+global Ht;
+global J_arm_inv;
+global J_leg_inv;
+global total_inertia;
+global r_B_Fi;
+global r_B_Hi;
+global r_B_COG;
+global T_global;
+
+global J_leg_R J_leg_L J_arm_R J_arm_L
+
+global timings count
+  %consider RHipYawPitch must be LHipYawPitch unique of Nao
+    theta_leg(1,1)=theta_leg(1,2);
+    
+%% Transformation matrices of the new positions
+% [~, chain_leg_R] = forward_chain('leg_R',theta_leg(:,1)');
+% [~, chain_leg_L] = forward_chain('leg_L',theta_leg(:,2)');
+% 
+% [~, chain_arm_R] = forward_chain('arm_R',theta_arm(:,1)');
+% [~, chain_arm_L] = forward_chain('arm_L',theta_arm(:,2)');
+% 
+% [~, chain_head] = forward_chain('head',theta_head');
+[chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head]=...
+    chains(theta_leg(:,1),theta_leg(:,2),theta_arm(:,1),theta_arm(:,2),theta_head);
+
+%% for global reference
+   [ chain_leg_R, chain_leg_L, chain_arm_R,chain_arm_L, chain_head]...
+       = global_reference( chain_leg_R, chain_leg_L, chain_arm_R,...
+        chain_arm_L, chain_head,swing,nextSwing_foot,s);
+
+%% Calculation of the COM
+
+    P_COG = center_of_gravity( chain_leg_R, chain_leg_L, chain_arm_R,...
+        chain_arm_L, chain_head );
+   % P_COG
+%% Position of the feet and hands
+P_Fi = [chain_leg_R(1:3,4,end),chain_leg_L(1:3,4,end)];
+P_Hi = [chain_arm_R(1:3,4,end),chain_arm_L(1:3,4,end)];
+
+%% position of legs and arms from the origin of the waist to ith foot coordinates wrt to global reference
+r_B_Fi = [chain_leg_R(1:3,4,end)-T_global(1:3,4),chain_leg_L(1:3,4,end)-T_global(1:3,4)];
+r_B_Hi = [chain_arm_R(1:3,4,end)-T_global(1:3,4),chain_arm_L(1:3,4,end)-T_global(1:3,4)];
+r_B_COG = P_COG-T_global(1:3,4);
+
+
+%% Jacobian matrices
+
+J_leg_R = Jacobian(chain_leg_R, size(theta_leg,1));
+J_leg_L = Jacobian(chain_leg_L, size(theta_leg,1));
+
+% %clamping hip yaw pitch
+% J_leg_R(:,1)=zeros(size(J_leg_R(:,1)));
+% J_leg_L(:,1)=zeros(size(J_leg_L(:,1)));
+% 
+% %end clamping
+
+J_arm_R = Jacobian(chain_arm_R, size(theta_arm,1));
+J_arm_L = Jacobian(chain_arm_L, size(theta_arm,1));
+time=tic;
+%% Inverse of the jacobian
+J_arm_inv = [inv_jacobian(J_arm_R), inv_jacobian(J_arm_L)];
+J_leg_inv = [inv_jacobian(J_leg_R), inv_jacobian(J_leg_L)];
+timings(count)=toc(time)
+count=count+1;
+disp('inverse Jacobians calcualtion time')
+%% Inertia matrices
+[Mt,Ht,total_inertia] = momentum_matrices(chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head);
+
+% matrices under constraint
+inertia_constrained();
+
+end
+

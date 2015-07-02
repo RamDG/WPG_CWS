@@ -1,0 +1,58 @@
+solid AutoCAD
+   facet normal 0.000000 -1.000000 0.000000
+      outer loop
+         vertex -12.600000 -12.600000 -12.477100
+         vertex 12.600000 -12.600000 -12.477100
+         vertex 12.600000 -12.600000 12.722900
+      endloop
+   endfacet
+   facet normal 0.000000 -1.000000 0.000000
+      outer loop
+         vertex -12.600000 -12.600000 -12.477100
+         vertex 12.600000 -12.600000 12.722900
+         vertex -12.600000 -12.600000 12.722900
+      endloop
+   endfacet
+   facet normal 0.000000 1.000000 -0.000000
+      outer loop
+         vertex 12.600000 12.600000 -12.477200
+         vertex -12.600000 12.600000 -12.477100
+         vertex 12.600000 12.600000 12.722800
+      endloop
+   endfacet
+   facet normal 0.000000 1.000000 0.000000
+      outer loop
+         vertex -12.600000 12.600000 -12.477100
+         vertex -12.600000 12.600000 12.722900
+         vertex 12.600000 12.600000 12.722800
+      endloop
+   endfacet
+   facet normal 1.000000 -0.000000 0.000000
+      outer loop
+         vertex 12.600000 -12.600000 -12.477100
+         vertex 12.600000 12.600000 -12.477200
+         vertex 12.600000 12.600000 12.722800
+      endloop
+   endfacet
+   facet normal 1.000000 0.000000 0.000000
+      outer loop
+         vertex 12.600000 -12.600000 -12.477100
+         vertex 12.600000 12.600000 12.722800
+         vertex 12.600000 -12.600000 12.722900
+      endloop
+   endfacet
+   facet normal -1.000000 -0.000000 -0.000000
+      outer loop
+         vertex -12.600000 12.600000 12.722900
+         vertex -12.600000 12.600000 -12.477100
+         vertex -12.600000 -12.600000 12.722900
+      endloop
+   endfacet
+   facet normal -1.000000 0.000000 0.000000
+      outer loop
+         vertex -12.600000 12.600000 -12.477100
+         vertex -12.600000 -12.600000 -12.477100
+         vertex -12.600000 -12.600000 12.722900
+      endloop
+   endfacet
+endsolid AutoCAD

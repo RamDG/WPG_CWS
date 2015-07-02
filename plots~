@@ -1,0 +1,354 @@
+% [ TC, x, y ] = solveMomentEq( P_COG_init(3), ddz_G,  dL, x_c, y_c,z_c,T_Cx,T_Cy,P_COG_init );
+ 
+ 
+    ddp_Cc=[0;0;0];
+    ws=zeros(2,201);
+      for s=2:size(dL,2)
+        p_C=[x(s,1);y(s,1);P_COG_init(3)];
+        ddp_Cc(1,s)=differentiate(x(s,2),x(s-1,2));
+        ddp_Cc(2,s)=differentiate(y(s,2),y(s-1,2));
+        ddp_Cc(3,s)=0;
+        ws(:,s)=wrench_sum(p_C,ddp_Cc(:,s),dL(:,s));
+%         plot(ddp_Cc(1),'*');hold on;
+%         plot(ddp_Cc(2),'*');hold on;
+    end
+    figure,
+    plot(ws(1,:))
+    figure,
+    plot(ws(2,:))
+    figure,
+    plot(ddp_Cc(2,:));hold on;
+    
+         figure,
+     plot(WrenchSum(1,:));hold on;
+     figure,
+    plot(WrenchSum(2,:));hold on;
+    
+
+figure,
+      plot(dL(1,:)+WrenchSum(1,:),'r'); hold on;
+      plot(dL(2,:),'b'); hold on;
+      plot(dL(3,:),'g'); hold on;
+%       
+      figure,
+      plot(T_Cx,'b');hold on;
+      plot(WrenchSum(1,:));hold on;
+     legend('T_Cx_ref','T_Cx',2);
+      xlabel('Time [sec]');
+      ylabel('T_Cx, N*meters')
+    
+    %   
+     figure, 
+     plot(L_ref(1,:),'r'); hold on;
+     plot(L_ref(2,:),'b'); hold on;
+     plot(L_ref(3,:),'g'); hold on;
+ 
+     figure, 
+     plot(L_comp(1,:),'r'); hold on;
+     plot(L_comp(2,:),'b'); hold on;
+     plot(L_comp(3,:),'g'); hold on;
+% 
+     figure,plot(L_ref(1,:)-L_comp(1,:))
+     figure,plot(L_ref(2,:)-L_comp(2,:))
+     figure,plot(L_ref(3,:)-L_comp(3,:))
+%     
+      figure, 
+     plot(dL(1,:),'r'); hold on;
+     plot(dL(2,:),'b'); hold on;
+     plot(dL(3,:),'g'); hold on;
+
+     
+     figure, 
+     plot(p_B(1,:),'r'); hold on;
+     plot(p_B(2,:),'b'); hold on;
+    plot(p_B(3,:),'g'); hold on;
+     
+figure, 
+     plot(v_B(1,:),'r'); hold on;
+     plot(v_B(2,:),'b'); hold on;
+    plot(v_B(3,:),'g'); hold on;
+
+
+     figure,
+     plot(squeeze(theta_leg(1,1,:)),'r'); hold on;
+     plot(squeeze(theta_leg(2,1,:)),'b'); hold on;
+     plot(squeeze(theta_leg(3,1,:)),'g'); hold on;
+     plot(squeeze(theta_leg(4,1,:)),'c'); hold on;
+     plot(squeeze(theta_leg(5,1,:)),'m'); hold on;
+     plot(squeeze(theta_leg(6,1,:)),'k'); hold on;
+%     
+     figure,
+     plot(squeeze(theta_leg(1,2,:)),'r'); hold on;
+     plot(squeeze(theta_leg(2,2,:)),'b'); hold on;
+     plot(squeeze(theta_leg(3,2,:)),'g'); hold on;
+     plot(squeeze(theta_leg(4,2,:)),'c'); hold on;
+     plot(squeeze(theta_leg(5,2,:)),'m'); hold on;
+     plot(squeeze(theta_leg(6,2,:)),'k'); hold on;
+%     
+
+figure,
+plot(squeeze(xi_Fi_traj(1,1,:)),'r'); hold on;
+     plot(squeeze(xi_Fi_traj(2,1,:)),'b'); hold on;
+    plot(squeeze(xi_Fi_traj(3,1,:)),'g'); hold on;
+    
+    figure,
+plot(squeeze(xi_Fi_traj(1,2,:)),'r'); hold on;
+     plot(squeeze(xi_Fi_traj(2,2,:)),'b'); hold on;
+    plot(squeeze(xi_Fi_traj(3,2,:)),'g'); hold on;
+
+    figure,
+plot(squeeze(xi_Hi_traj(1,1,:)),'r'); hold on;
+     plot(squeeze(xi_Hi_traj(2,1,:)),'b'); hold on;
+    plot(squeeze(xi_Hi_traj(3,1,:)),'g'); hold on;
+    
+    figure,
+plot(squeeze(xi_Hi_traj(1,2,:)),'r'); hold on;
+     plot(squeeze(xi_Hi_traj(2,2,:)),'b'); hold on;
+    plot(squeeze(xi_Hi_traj(3,2,:)),'g'); hold on;
+    
+    figure,
+plot(squeeze(P_F(1,1,:)),'r'); hold on;
+     plot(squeeze(P_F(2,1,:)),'b'); hold on;
+    plot(squeeze(P_F(3,1,:)),'g'); hold on;
+    
+    
+      figure,
+plot(squeeze(P_F(1,2,:)),'r'); hold on;
+     plot(squeeze(P_F(2,2,:)),'b'); hold on;
+    plot(squeeze(P_F(3,2,:)),'g'); hold on;
+    
+    
+    
+    
+    
+    
+    %% calculate initial WS
+global total_mass g
+   wsx= total_mass*g*P_COG_init(2)
+   wsy= -total_mass*g*P_COG_init(1)
+
+    
+     sum(sum(abs(xi_B(4:6,:))))
+    
+    
+    
+  y(:,1)  = interp1(CoG.time',CoG.signals.values(:,1),lt);
+  y(:,2)  = interp1(CoGD.time',CoGD.signals.values(:,1),lt);  
+  
+x(:,1)  = interp1(CoG.time',CoG.signals.values(:,2),lt);  
+x(:,2)  = interp1(CoGD.time',CoGD.signals.values(:,2),lt);  
+
+for s=1:size(theta_leg,3)
+ if s+1<=size(theta_leg,3)
+        [chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head] = ...
+            move_robot(theta_leg(:,:,s),theta_arm(:,:,s),theta_head,swing(s),swing(s+1),s);
+        else
+            [chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head] = ...
+            move_robot(theta_leg(:,:,s),theta_arm(:,:,s),theta_head,swing(s),swing(s),s);
+            
+        end
+        % animate the motion
+        if animation == 1
+            animate(chain_leg_R, chain_leg_L, chain_arm_R, chain_arm_L, chain_head);
+        end
+end
+
+
+    
+%% Previous plots from batiste
+
+%com_diff = com_desired - com_measured;
+% pos_diff = desired_pos - real_pos;
+% 
+% pos_diff_R = zeros(3,iteration-1);
+% pos_diff_L = zeros(3,iteration-1);
+% pos_diff_R(:,:) = pos_diff(:,1,:);
+% pos_diff_L(:,:) = pos_diff(:,2,:);
+% 
+% real_pos_R = zeros(3,iteration-1);
+% real_pos_L = zeros(3,iteration-1);
+% real_pos_R(:,:) = real_pos(:,1,:);
+% real_pos_L(:,:) = real_pos(:,2,:);
+% 
+% real_pos_armR = zeros(3,iteration-1);
+% real_pos_armL = zeros(3,iteration-1);
+% real_pos_armR(:,:) = real_pos_arm(:,1,:);
+% real_pos_armL(:,:) = real_pos_arm(:,2,:);
+% 
+% des_pos_R = zeros(3,iteration-1);
+% des_pos_L = zeros(3,iteration-1);
+% des_pos_R(:,:) = desired_pos(:,1,:);
+% des_pos_L(:,:) = desired_pos(:,2,:);
+
+% T = step_time*nb_steps;
+% time_vector = linspace(0,T,nb_points*nb_steps);
+% 
+% if plot_res == 1
+%     % desired pos
+%     figure();
+%     subplot(2,3,1);
+%     plot(time_vector,des_pos_R(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot x');
+%     subplot(2,3,2);
+%     plot(time_vector,des_pos_R(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot y');
+%     subplot(2,3,3);
+%     plot(time_vector,des_pos_R(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot z');
+%     subplot(2,3,4);
+%     plot(time_vector,des_pos_L(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot x');
+%     subplot(2,3,5);
+%     plot(time_vector,des_pos_L(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot y');
+%     subplot(2,3,6);
+%     plot(time_vector,des_pos_L(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot z');
+%     set(gcf,'NextPlot','add');
+%     axes;
+%     h = suptitle('Desired position of the feet');
+%     set(gca,'Visible','off');
+%     set(h,'Visible','on'); 
+%   
+%     % real pos
+%     figure();
+%     subplot(2,3,1);
+%     plot(time_vector,real_pos_R(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot x');
+%     subplot(2,3,2);
+%     plot(time_vector,real_pos_R(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot y');
+%     subplot(2,3,3);
+%     plot(time_vector,real_pos_R(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right foot z');
+%     subplot(2,3,4);
+%     plot(time_vector,real_pos_L(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot x');
+%     subplot(2,3,5);
+%     plot(time_vector,real_pos_L(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot y');
+%     subplot(2,3,6);
+%     plot(time_vector,real_pos_L(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left foot z');
+%     set(gcf,'NextPlot','add');
+%     axes;
+%     h = suptitle('Measured position of the feet');
+%     set(gca,'Visible','off');
+%     set(h,'Visible','on'); 
+%     
+%     % real pos arm
+%     figure();
+%     subplot(2,3,1);
+%     plot(time_vector,real_pos_armR(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right hand x');
+%     subplot(2,3,2);
+%     plot(time_vector,real_pos_armR(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right hand y');
+%     subplot(2,3,3);
+%     plot(time_vector,real_pos_armR(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('right hand z');
+%     subplot(2,3,4);
+%     plot(time_vector,real_pos_armL(1,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left hand x');
+%     subplot(2,3,5);
+%     plot(time_vector,real_pos_armL(2,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left hand y');
+%     subplot(2,3,6);
+%     plot(time_vector,real_pos_armL(3,:));
+%     ylabel('meter');
+%     xlabel('number of steps');
+%     title('left hand z');
+%     set(gcf,'NextPlot','add');
+%     axes;
+%     h = suptitle('Measured position of the hands');
+%     set(gca,'Visible','off');
+%     set(h,'Visible','on'); 
+%     
+% %     % com position
+% %     figure();
+% %     subplot(3,3,1);
+% %     plot(time_vector,com_desired(1,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('x desired');
+% %     subplot(3,3,2);
+% %     plot(time_vector,com_desired(2,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('y desired');
+% %     subplot(3,3,3);
+% %     plot(time_vector,com_desired(3,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('z desired');
+% %     subplot(3,3,4);
+% %     plot(time_vector,com_measured(1,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('x measured');
+% %     subplot(3,3,5);
+% %     plot(time_vector,com_measured(2,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('y measured');
+% %     subplot(3,3,6);
+% %     plot(time_vector,com_measured(3,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('z measured');
+% %     subplot(3,3,7);
+% %     plot(time_vector,com_diff(1,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('difference in x');
+% %     subplot(3,3,8);
+% %     plot(time_vector,com_diff(2,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('difference in y');
+% %     subplot(3,3,9);
+% %     plot(time_vector,com_diff(3,:));
+% %     ylabel('meter');
+% %     xlabel('number of steps');
+% %     title('difference in z');
+% %     
+% %     set(gcf,'NextPlot','add');
+% %     axes;
+% %     h = suptitle('Position of the Center of Mass');
+% %     set(gca,'Visible','off');
+% %     set(h,'Visible','on');
+% end
