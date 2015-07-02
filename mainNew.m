@@ -58,7 +58,7 @@ alpha=0;
 %% Parameters of the trajectory
 nb_points = 100;
 nb_steps = 6;
-swing_foot = 1; % not to be modified
+swing_foot = 2; % not to be modified
 step_time = .75;
 step_length = 50*10^-3;
 max_height = 20*10^-3;

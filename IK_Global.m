@@ -101,7 +101,7 @@ do_B=integrateTwistEulRotm(xi_B(4:6,1),T_global(1:3,1:3,end));
     theta_arm(:,:) = t_arm_1;
     theta_leg(:,:) =t_leg_1;
     it=0;
-    controlVector=[zeros(1,3),zeros(1,3),ones(1,3),[1,1,1],zeros(1,3),zeros(1,3),zeros(1,3),zeros(1,3)]ñ
+    controlVector=[zeros(1,3),zeros(1,3),ones(1,3),[1,1,1],zeros(1,3),zeros(1,3),zeros(1,3),zeros(1,3)];
     cMatrix=diag(controlVector);
     while (sum(abs(error))>.0001 && it<500)
         
@@ -188,10 +188,10 @@ do_B=integrateTwistEulRotm(xi_B(4:6,1),T_global(1:3,1:3,end));
              errorFi(6:-1:4,1)=quat2eul(quatmultiply(quatinv(o_Fr),do_Fr));
              errorFi(6:-1:4,2)=quat2eul(quatmultiply(quatinv(o_Fl),do_Fl));
              if swing(s)==2
-                 errorB(6:-1:4)=-quat2eul(quatmultiply(quatinv(o_B),do_B));
+                 errorB(6:-1:4)=quat2eul(quatmultiply(quatinv(o_B),do_B));
              else
                  
-                 errorB(6:-1:4)=-quat2eul(quatmultiply(quatinv(o_B),do_B));
+                 errorB(6:-1:4)=quat2eul(quatmultiply(quatinv(o_B),do_B));
              end
          end
          % use with aerospace toolbox installed
@@ -199,10 +199,10 @@ do_B=integrateTwistEulRotm(xi_B(4:6,1),T_global(1:3,1:3,end));
              errorFi(6:-1:4,1)=quat2angle(quatmultiply(quatinv(o_Fr),do_Fr));
              errorFi(6:-1:4,2)=quat2angle(quatmultiply(quatinv(o_Fl),do_Fl));
              if swing(s)==2
-                 errorB(6:-1:4)=-quat2angle(quatmultiply(quatinv(o_B),do_B));
+                 errorB(6:-1:4)=quat2angle(quatmultiply(quatinv(o_B),do_B));
              else
                  
-                 errorB(6:-1:4)=-quat2angle(quatmultiply(quatinv(o_B),do_B));
+                 errorB(6:-1:4)=quat2angle(quatmultiply(quatinv(o_B),do_B));
                  
              end
          end
